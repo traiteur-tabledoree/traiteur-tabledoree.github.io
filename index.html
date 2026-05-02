@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>La Table Dorée – Traiteur & Livraison</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #e8c84a;
+      --gold-dark: #b8860b;
+      --gold-mid: #c8960c;
+      --bg: #0f0900;
+      --text: #f0e6cc;
+      --muted: #7a5a28;
+      --border: rgba(180,130,20,0.2);
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Lato', serif; min-height: 100vh; }
+
+    @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,9,0,0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 60px;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 4s linear infinite;
+    }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-btn {
+      background: none; border: none; border-bottom: 1px solid transparent;
+      cursor: pointer; font-family: 'Lato', sans-serif; font-size: 12px;
+      letter-spacing: 2px; text-transform: uppercase; padding: 8px 14px;
+      color: var(--muted); transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-btn.active, .nav-btn:hover { color: var(--gold); border-bottom-color: var(--gold); }
+    #cart-btn {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+      color: var(--bg); border: none; cursor: pointer;
+      font-family: 'Lato', sans-serif; font-weight: 700; font-size: 12px;
+      letter-spacing: 1px; padding: 8px 16px; border-radius: 20px;
+      display: none; transition: opacity 0.2s;
+    }
+    #cart-btn:hover { opacity: 0.85; }
+
+    /* SECTIONS */
+    .section { display: none; animation: fadeUp 0.4s ease; }
+    .section.active { display: block; }
+
+    /* HERO */
+    #hero {
+      min-height: 88vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 60px 24px;
+      background:
+        radial-gradient(ellipse at 50% 60%, rgba(180,130,20,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(200,150,10,0.08) 0%, transparent 40%);
+    }
+    .hero-icon { font-size: 64px; animation: float 3s ease-in-out infinite; margin-bottom: 20px; }
+    .hero-sub { font-size: 11px; letter-spacing: 8px; color: #8a6a10; text-transform: uppercase; margin-bottom: 12px; }
+    h1 {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(40px, 8vw, 76px); line-height: 1.1; margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--gold-mid), #f5e070, var(--gold), var(--gold-dark));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-desc { font-weight: 300; font-size: 17px; color: #b09060; max-width: 480px; line-height: 1.8; margin-bottom: 40px; }
+    .btn-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+      color: var(--bg); border: none; cursor: pointer;
+      font-family: 'Lato', sans-serif; font-weight: 700; font-size: 13px;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 15px 32px; border-radius: 4px; transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-gold:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-outline {
+      background: none; border: 1px solid rgba(180,130,20,0.4);
+      color: var(--gold-mid); cursor: pointer;
+      font-family: 'Lato', sans-serif; font-weight: 700; font-size: 13px;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 15px 32px; border-radius: 4px; transition: border-color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* FEATURES */
+    .features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      border-top: 1px solid var(--border);
+    }
+    .feature {
+      padding: 36px 24px; text-align: center;
+      border-right: 1px solid rgba(180,130,20,0.1);
+      background: rgba(180,130,20,0.03);
+    }
+    .feature:last-child { border-right: none; }
+    .feature-icon { font-size: 30px; margin-bottom: 12px; }
+    .feature-title { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--gold); margin-bottom: 6px; }
+    .feature-desc { font-weight: 300; font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* MENU */
+    #menu-section { padding: 40px 24px; max-width: 800px; margin: 0 auto; }
+    #menu-section h2 { font-family: 'Playfair Display', serif; font-size: 34px; color: var(--gold); text-align: center; margin-bottom: 6px; }
+    .menu-sub { font-weight: 300; color: var(--muted); text-align: center; margin-bottom: 40px; font-size: 13px; letter-spacing: 1px; }
+    .cat-title {
+      font-family: 'Playfair Display', serif; font-size: 17px; color: var(--gold-mid);
+      border-bottom: 1px solid rgba(180,130,20,0.2); padding-bottom: 10px;
+      margin-bottom: 14px; letter-spacing: 1px;
+    }
+    .cat-block { margin-bottom: 36px; }
+    .menu-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      background: rgba(180,130,20,0.06); border: 1px solid rgba(180,130,20,0.15);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 10px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .menu-item:hover { border-color: rgba(180,130,20,0.4); background: rgba(180,130,20,0.1); }
+    .item-info { flex: 1; }
+    .item-name { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--text); margin-bottom: 3px; }
+    .item-desc { font-weight: 300; font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .item-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .item-price { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--gold); font-weight: 700; }
+    .btn-add {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: var(--bg); border: none; cursor: pointer;
+      font-family: 'Lato', sans-serif; font-weight: 700; font-size: 11px;
+      letter-spacing: 1px; padding: 8px 14px; border-radius: 4px;
+      transition: opacity 0.2s;
+    }
+    .btn-add:hover { opacity: 0.85; }
+    .qty-control { display: flex; align-items: center; gap: 8px; }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid rgba(180,130,20,0.5);
+      background: rgba(180,130,20,0.1); color: var(--gold);
+      cursor: pointer; font-size: 16px; line-height: 1;
+      transition: background 0.15s; display: flex; align-items: center; justify-content: center;
+    }
+    .qty-btn:hover { background: rgba(180,130,20,0.3); }
+    .qty-num { color: var(--gold); font-size: 15px; min-width: 18px; text-align: center; }
+    #sticky-cart {
+      position: sticky; bottom: 24px; text-align: center;
+      margin-top: 24px; display: none;
+    }
+
+    /* PANIER */
+    #panier-section { padding: 40px 24px; max-width: 600px; margin: 0 auto; }
+    #panier-section h2 { font-family: 'Playfair Display', serif; font-size: 30px; color: var(--gold); text-align: center; margin-bottom: 28px; }
+    #panier-empty { text-align: center; color: var(--muted); padding: 60px 0; }
+    #panier-empty .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    #panier-items { display: grid; gap: 12px; margin-bottom: 20px; }
+    .panier-item {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(180,130,20,0.06); border: 1px solid rgba(180,130,20,0.15);
+      border-radius: 8px; padding: 14px 16px;
+    }
+    .panier-item-name { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--text); }
+    .panier-item-unit { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .panier-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(180,130,20,0.3); padding-top: 18px; margin-bottom: 28px;
+    }
+    .total-label { font-size: 13px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+    .total-amount { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--gold); font-weight: 700; }
+    #btn-whatsapp {
+      width: 100%; padding: 18px; font-size: 15px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .wa-hint { font-weight: 300; font-size: 12px; color: #5a4010; text-align: center; margin-top: 10px; }
+
+    /* CONTACT */
+    #contact-section { padding: 60px 24px; max-width: 500px; margin: 0 auto; text-align: center; }
+    #contact-section h2 { font-family: 'Playfair Display', serif; font-size: 30px; color: var(--gold); margin-bottom: 10px; }
+    .contact-sub { font-weight: 300; color: var(--muted); margin-bottom: 44px; font-size: 13px; }
+    .contact-card {
+      display: flex; align-items: center; gap: 16px;
+      background: rgba(180,130,20,0.06); border: 1px solid rgba(180,130,20,0.15);
+      border-radius: 8px; padding: 18px 22px; margin-bottom: 12px; text-align: left;
+    }
+    .contact-icon { font-size: 26px; }
+    .contact-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .contact-val { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--gold); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(180,130,20,0.12); margin-top: 60px;
+      padding: 24px; text-align: center;
+      font-weight: 300; font-size: 11px; color: #4a3808; letter-spacing: 2px;
+    }
+
+    @media (max-width: 500px) {
+      nav { padding: 0 12px; }
+      .nav-btn { padding: 8px 8px; font-size: 11px; }
+      .features { grid-template-columns: 1fr 1fr; }
+      .feature { border-right: none; border-bottom: 1px solid rgba(180,130,20,0.1); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">La Table Dorée</div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showSection('accueil')">Accueil</button>
+    <button class="nav-btn" onclick="showSection('menu')">Menu</button>
+    <button class="nav-btn" onclick="showSection('contact')">Contact</button>
+  </div>
+  <button id="cart-btn" onclick="showSection('panier')">🛒 <span id="cart-label">0 — 0€</span></button>
+</nav>
+
+<!-- ACCUEIL -->
+<div id="accueil" class="section active">
+  <div id="hero">
+    <div class="hero-icon">🍽️</div>
+    <div class="hero-sub">Traiteur • Livraison à domicile</div>
+    <h1>La Table Dorée</h1>
+    <p class="hero-desc">Cuisine fusion raffinée, préparée avec passion et livrée chez vous. Saveurs d'Afrique, d'Europe et d'ailleurs.</p>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="showSection('menu')">Voir le menu</button>
+      <button class="btn-outline" onclick="ouvrirWhatsApp()">📲 Commander sur WhatsApp</button>
+    </div>
+  </div>
+  <div class="features">
+    <div class="feature"><div class="feature-icon">🕐</div><div class="feature-title">Livraison rapide</div><div class="feature-desc">En moins d'1h dans votre secteur</div></div>
+    <div class="feature"><div class="feature-icon">👨‍🍳</div><div class="feature-title">Fait maison</div><div class="feature-desc">Cuisinés frais chaque jour avec amour</div></div>
+    <div class="feature"><div class="feature-icon">🌍</div><div class="feature-title">Fusion unique</div><div class="feature-desc">Recettes d'Afrique, d'Europe et d'ailleurs</div></div>
+    <div class="feature"><div class="feature-icon">💬</div><div class="feature-title">Commande facile</div><div class="feature-desc">Un message WhatsApp suffit</div></div>
+  </div>
+</div>
+
+<!-- MENU -->
+<div id="menu" class="section">
+  <div id="menu-section">
+    <h2>Notre Menu</h2>
+    <p class="menu-sub">Tous nos plats sont préparés à la commande</p>
+    <div id="menu-container"></div>
+    <div id="sticky-cart">
+      <button class="btn-gold" onclick="showSection('panier')" id="sticky-cart-btn">🛒 Voir mon panier</button>
+    </div>
+  </div>
+</div>
+
+<!-- PANIER -->
+<div id="panier" class="section">
+  <div id="panier-section">
+    <h2>Mon Panier</h2>
+    <div id="panier-content"></div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="section">
+  <div id="contact-section">
+    <h2>Nous contacter</h2>
+    <p class="contact-sub">On répond vite, promis !</p>
+    <div class="contact-card">
+      <div class="contact-icon">📲</div>
+      <div style="flex:1">
+        <div class="contact-label">Commander / Infos</div>
+        <div class="contact-val">WhatsApp</div>
+      </div>
+      <button class="btn-gold" style="padding:10px 16px;font-size:11px" onclick="ouvrirWhatsApp()">Ouvrir</button>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">📍</div>
+      <div>
+        <div class="contact-label">Zone de livraison</div>
+        <div class="contact-val">Écrivez-nous pour vérifier</div>
+      </div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">🕐</div>
+      <div>
+        <div class="contact-label">Horaires</div>
+        <div class="contact-val">Lun – Sam : 11h – 22h</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 LA TABLE DORÉE — Tous droits réservés</footer>
+
+<script>
+  const WHATSAPP_NUM = "33669903275";
+
+  const MENU = [
+    {
+      cat: "🍖 Plats principaux",
+      items: [
+        { nom: "Poulet Yassa", desc: "Poulet mariné aux oignons et citron, servi avec riz", prix: 14 },
+        { nom: "Thieboudienne", desc: "Riz au poisson façon sénégalaise, légumes du marché", prix: 16 },
+        { nom: "Poulet rôti fusion", desc: "Marinade épicée maison, frites dorées et sauce", prix: 13 },
+        { nom: "Couscous maison", desc: "Semoule fine, légumes mijotés et viande tendre, sauce harissa", prix: 15 },
+      ]
+    },
+    {
+      cat: "🥗 Entrées & accompagnements",
+      items: [
+        { nom: "Salade de l'Atlas", desc: "Tomates, olives, feta, vinaigrette au citron", prix: 7 },
+        { nom: "Riz parfumé", desc: "Riz basmati au beurre et épices douces", prix: 4 },
+      ]
+    },
+    {
+      cat: "🍮 Desserts",
+      items: [
+        { nom: "Fondant chocolat", desc: "Cœur coulant, crème vanille maison", prix: 6 },
+        { nom: "Salade de fruits frais", desc: "Fruits de saison, menthe fraîche et miel", prix: 4 },
+      ]
+    }
+  ];
+
+  let panier = {};
+
+  function ouvrirWhatsApp() {
+    window.open(`https://wa.me/${WHATSAPP_NUM}`, "_blank");
+  }
+
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const btns = document.querySelectorAll('.nav-btn');
+    const map = { accueil: 0, menu: 1, contact: 2 };
+    if (map[id] !== undefined) btns[map[id]].classList.add('active');
+    window.scrollTo(0, 0);
+    if (id === 'panier') renderPanier();
+  }
+
+  function renderMenu() {
+    const container = document.getElementById('menu-container');
+    container.innerHTML = '';
+    MENU.forEach(cat => {
+      const block = document.createElement('div');
+      block.className = 'cat-block';
+      block.innerHTML = `<div class="cat-title">${cat.cat}</div>`;
+      cat.items.forEach(item => {
+        const qte = panier[item.nom]?.qte || 0;
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+        div.id = 'item-' + item.nom.replace(/\s/g,'_');
+        div.innerHTML = `
+          <div class="item-info">
+            <div class="item-name">${item.nom}</div>
+            <div class="item-desc">${item.desc}</div>
+          </div>
+          <div class="item-right">
+            <span class="item-price">${item.prix}€</span>
+            ${qte === 0
+              ? `<button class="btn-add" onclick="ajouter('${item.nom}',${item.prix})">+ Ajouter</button>`
+              : `<div class="qty-control">
+                  <button class="qty-btn" onclick="retirer('${item.nom}',${item.prix})">−</button>
+                  <span class="qty-num">${qte}</span>
+                  <button class="qty-btn" onclick="ajouter('${item.nom}',${item.prix})">+</button>
+                </div>`
+            }
+          </div>`;
+        block.appendChild(div);
+      });
+      container.appendChild(block);
+    });
+  }
+
+  function ajouter(nom, prix) {
+    if (!panier[nom]) panier[nom] = { qte: 0, prix };
+    panier[nom].qte++;
+    updateCart();
+    renderMenu();
+  }
+
+  function retirer(nom, prix) {
+    if (!panier[nom]) return;
+    panier[nom].qte--;
+    if (panier[nom].qte <= 0) delete panier[nom];
+    updateCart();
+    renderMenu();
+  }
+
+  function updateCart() {
+    const items = Object.entries(panier);
+    const total = items.reduce((s, [, v]) => s + v.prix * v.qte, 0);
+    const nb = items.reduce((s, [, v]) => s + v.qte, 0);
+    const cartBtn = document.getElementById('cart-btn');
+    const stickyCart = document.getElementById('sticky-cart');
+    if (nb > 0) {
+      cartBtn.style.display = 'block';
+      document.getElementById('cart-label').textContent = `${nb} — ${total}€`;
+      stickyCart.style.display = 'block';
+      document.getElementById('sticky-cart-btn').textContent = `🛒 Voir mon panier (${nb}) — ${total}€`;
+    } else {
+      cartBtn.style.display = 'none';
+      stickyCart.style.display = 'none';
+    }
+  }
+
+  function renderPanier() {
+    const content = document.getElementById('panier-content');
+    const items = Object.entries(panier);
+    if (items.length === 0) {
+      content.innerHTML = `
+        <div id="panier-empty">
+          <div class="empty-icon">🛒</div>
+          <div style="margin-bottom:20px">Votre panier est vide</div>
+          <button class="btn-gold" onclick="showSection('menu')">Voir le menu</button>
+        </div>`;
+      return;
+    }
+    const total = items.reduce((s, [, v]) => s + v.prix * v.qte, 0);
+    const nb = items.reduce((s, [, v]) => s + v.qte, 0);
+    let html = `<div id="panier-items">`;
+    items.forEach(([nom, v]) => {
+      html += `
+        <div class="panier-item">
+          <div>
+            <div class="panier-item-name">${nom}</div>
+            <div class="panier-item-unit">${v.prix}€ / unité</div>
+          </div>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="retirer('${nom}',${v.prix});renderPanier()">−</button>
+            <span class="qty-num">${v.qte}</span>
+            <button class="qty-btn" onclick="ajouter('${nom}',${v.prix});renderPanier()">+</button>
+            <span style="font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);margin-left:8px;min-width:48px;text-align:right">${v.prix * v.qte}€</span>
+          </div>
+        </div>`;
+    });
+    html += `</div>
+      <div class="panier-total-row">
+        <span class="total-label">Total</span>
+        <span class="total-amount">${total}€</span>
+      </div>
+      <button class="btn-gold" id="btn-whatsapp" onclick="commanderWhatsApp()">📲 Commander via WhatsApp</button>
+      <p class="wa-hint">Votre commande sera envoyée directement sur WhatsApp</p>`;
+    content.innerHTML = html;
+  }
+
+  function commanderWhatsApp() {
+    const items = Object.entries(panier);
+    const total = items.reduce((s, [, v]) => s + v.prix * v.qte, 0);
+    const lignes = items.map(([nom, v]) => `• ${nom} x${v.qte} = ${v.prix * v.qte}€`).join('%0A');
+    const msg = `Bonjour La Table Dorée ! 👋%0A%0AJe souhaite passer la commande suivante :%0A%0A${lignes}%0A%0A*Total : ${total}€*%0A%0AMerci !`;
+    window.open(`https://wa.me/${WHATSAPP_NUM}?text=${msg}`, "_blank");
+  }
+
+  renderMenu();
+</script>
+</body>
+</html>
